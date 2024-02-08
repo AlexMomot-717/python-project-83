@@ -62,5 +62,7 @@ def list_urls() -> str:
 
 @app.route("/urls/<int:url_id>/checks", methods=["POST"])
 def add_url_check(url_id: int) -> Any:
-    create_check(url_id)
+    check_context = create_check(url_id)
+    if not check_context:
+        flash("Произошла ошибка при проверке", "danger")
     return redirect(url_for("show_url", url_id=url_id))

@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 import psycopg2
 import psycopg2.extras
 from dotenv import load_dotenv
+from page_analyzer.utils.url import get_url_status_code
 
 load_dotenv()
 
@@ -85,8 +86,14 @@ def get_urls_data() -> List[Dict[str, Any]]:
     return actual_urls_data
 
 
-def generate_check_context() -> Dict[str, int | str]:
-    status_code = 200
+def generate_check_context(url_id: int) -> Dict[str, int | str] | None:
+    url_context = get_url_context(url_id)
+    if not url_context:
+        return None
+    url_name = url_context["name"]
+    status_code = get_url_status_code(str(url_name))
+    if status_code is None:
+        return None
     h1 = ""
     title = ""
     description = ""
@@ -99,8 +106,10 @@ def generate_check_context() -> Dict[str, int | str]:
     return check_context
 
 
-def create_check(url_id: int) -> None:
-    check_context = generate_check_context()
+def create_check(url_id: int) -> bool:
+    check_context = generate_check_context(url_id)
+    if check_context is None:
+        return False
     conn = connect_db()
     with conn.cursor() as cur:
         cur.execute(
@@ -117,7 +126,7 @@ def create_check(url_id: int) -> None:
         )
         conn.commit()
     conn.close()
-    return None
+    return True
 
 
 def get_checks_data(url_id: int) -> List[Dict[str, int | str]]:
