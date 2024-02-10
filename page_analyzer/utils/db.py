@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 import psycopg2
 import psycopg2.extras
 from dotenv import load_dotenv
-from page_analyzer.utils.url import get_url_status_code
+from page_analyzer.utils.url import check_url
 
 load_dotenv()
 
@@ -86,29 +86,12 @@ def get_urls_data() -> List[Dict[str, Any]]:
     return actual_urls_data
 
 
-def generate_check_context(url_id: int) -> Dict[str, int | str] | None:
+def create_check(url_id: int) -> bool:
     url_context = get_url_context(url_id)
     if not url_context:
-        return None
-    url_name = url_context["name"]
-    status_code = get_url_status_code(str(url_name))
-    if status_code is None:
-        return None
-    h1 = ""
-    title = ""
-    description = ""
-    check_context: dict[str, int | str] = {
-        "response_code": status_code,
-        "h1": h1,
-        "title": title,
-        "description": description,
-    }
-    return check_context
-
-
-def create_check(url_id: int) -> bool:
-    check_context = generate_check_context(url_id)
-    if check_context is None:
+        return False
+    check_result = check_url(str(url_context["name"]))
+    if check_result is None:
         return False
     conn = connect_db()
     with conn.cursor() as cur:
@@ -118,10 +101,10 @@ def create_check(url_id: int) -> bool:
             " VALUES (%s, %s, %s, %s, %s);",
             (
                 url_id,
-                check_context["response_code"],
-                check_context["h1"],
-                check_context["title"],
-                check_context["description"],
+                check_result["response_code"],
+                check_result["h1"],
+                check_result["title"],
+                check_result["description"],
             ),
         )
         conn.commit()
