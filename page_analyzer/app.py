@@ -25,29 +25,29 @@ def index() -> str:
     return render_template("index.html")
 
 
-@app.route("/url", methods=["POST"])
+@app.route("/urls", methods=["POST"])
 def add_url() -> Any:
     url_name = request.form["url"]
     errors = validate(url_name)
     if errors:
         flash(errors["name"], "danger")
-        return render_template("index.html")
+        return render_template("index.html", url_name=url_name), 422
     url_name = normalize(url_name)
     url_id = get_url_by_name(url_name)
     if url_id:
         flash("Страница уже существует", "info")
-        return redirect(url_for("show_url", url_id=url_id))
+        return redirect(url_for("show_url", id=url_id))
     url_id = create_url(url_name)
-    flash("Страница успешно дoбавлена", "success")
-    return redirect(url_for("show_url", url_id=url_id))
+    flash("Страница успешно добавлена", "success")
+    return redirect(url_for("show_url", id=url_id), code=302)
 
 
-@app.route("/urls/<int:url_id>")
-def show_url(url_id: int) -> str:
-    url_data = get_url_context(url_id)
+@app.route("/urls/<int:id>")
+def show_url(id: int) -> str:
+    url_data = get_url_context(id)
     if not url_data:
         return render_template("page_not_found.html")
-    checks = get_checks_data(url_id)
+    checks = get_checks_data(id)
     return render_template("url.html", url=url_data, checks=checks)
 
 
@@ -60,9 +60,11 @@ def list_urls() -> str:
     )
 
 
-@app.route("/urls/<int:url_id>/checks", methods=["POST"])
-def add_url_check(url_id: int) -> Any:
-    check_context = create_check(url_id)
+@app.route("/urls/<int:id>/checks", methods=["POST"])
+def add_url_check(id: int) -> Any:
+    check_context = create_check(id)
     if not check_context:
         flash("Произошла ошибка при проверке", "danger")
-    return redirect(url_for("show_url", url_id=url_id))
+    else:
+        flash("Страница успешно проверена", "success")
+    return redirect(url_for("show_url", id=id))

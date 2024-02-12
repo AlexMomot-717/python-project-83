@@ -28,6 +28,9 @@ def check_url(url: str) -> Dict[str, str] | None:
     except requests.exceptions.RequestException as e:
         print(e)
         return None
+    status_code = r.status_code
+    if status_code != 200:
+        return None
     html = BeautifulSoup(r.content, "html.parser")
     h1_el = html.find("h1")
     h1 = "" if not h1_el else h1_el.get_text()
@@ -39,7 +42,7 @@ def check_url(url: str) -> Dict[str, str] | None:
     else:
         description = tags[0].get("content", "")
     return {
-        "response_code": str(r.status_code),
+        "response_code": str(status_code),
         "h1": h1,
         "title": title,
         "description": description,
