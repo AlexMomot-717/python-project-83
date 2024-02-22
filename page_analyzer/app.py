@@ -6,10 +6,10 @@ from flask import Flask, flash, redirect, render_template, request, url_for
 from page_analyzer.utils.db import (
     create_check,
     create_url,
-    get_checks_data,
     get_url_by_name,
-    get_url_context,
-    get_urls_data,
+    get_url_checks,
+    get_url_data,
+    get_urls,
 )
 from page_analyzer.utils.url import normalize, validate
 
@@ -44,16 +44,16 @@ def add_url() -> Any:
 
 @app.route("/urls/<int:id>")
 def show_url(id: int) -> str:
-    url_data = get_url_context(id)
+    url_data = get_url_data(id)
     if not url_data:
         return render_template("page_not_found.html")
-    checks = get_checks_data(id)
+    checks = get_url_checks(id)
     return render_template("url.html", url=url_data, checks=checks)
 
 
 @app.route("/urls")
 def list_urls() -> str:
-    urls_data_list = get_urls_data()
+    urls_data_list = get_urls()
     return render_template(
         "urls.html",
         urls=urls_data_list,
@@ -62,7 +62,10 @@ def list_urls() -> str:
 
 @app.route("/urls/<int:id>/checks", methods=["POST"])
 def add_url_check(id: int) -> Any:
-    check_context = create_check(id)
+    url_data = get_url_data(id)
+    if not url_data:
+        return render_template("page_not_found.html")
+    check_context = create_check(url_data)
     if not check_context:
         flash("Произошла ошибка при проверке", "danger")
     else:
