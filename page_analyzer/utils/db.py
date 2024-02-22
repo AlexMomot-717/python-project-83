@@ -14,7 +14,7 @@ def connect_db() -> Any:
     return conn
 
 
-def get_url_context(url_id: int) -> Dict[str, int | str] | None:
+def get_url_data(url_id: int) -> Dict[str, int | str] | None:
     conn = connect_db()
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as dict_cur:
         dict_cur.execute(
@@ -64,7 +64,7 @@ def create_url(url_name: str) -> int:
     return int(url_id)
 
 
-def get_urls_data() -> List[Dict[str, Any]]:
+def get_urls() -> List[Dict[str, Any]]:
     conn = connect_db()
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as dict_cur:
         dict_cur.execute(
@@ -86,11 +86,8 @@ def get_urls_data() -> List[Dict[str, Any]]:
     return actual_urls_data
 
 
-def create_check(url_id: int) -> bool:
-    url_context = get_url_context(url_id)
-    if not url_context:
-        return False
-    check_result = check_url(str(url_context["name"]))
+def create_check(url_data: Dict[str, Any]) -> bool:
+    check_result = check_url(str(url_data["name"]))
     if check_result is None:
         return False
     conn = connect_db()
@@ -100,7 +97,7 @@ def create_check(url_id: int) -> bool:
             " (url_id, status_code, h1, title, description)"
             " VALUES (%s, %s, %s, %s, %s);",
             (
-                url_id,
+                url_data["id"],
                 check_result["response_code"],
                 check_result["h1"],
                 check_result["title"],
@@ -112,7 +109,7 @@ def create_check(url_id: int) -> bool:
     return True
 
 
-def get_checks_data(url_id: int) -> List[Dict[str, int | str]]:
+def get_url_checks(url_id: int) -> List[Dict[str, str]]:
     conn = connect_db()
     with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as dict_cur:
         dict_cur.execute(
