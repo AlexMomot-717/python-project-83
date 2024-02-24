@@ -15,3 +15,9 @@ lint:
 
 build:
 	./build.sh
+
+test:
+	poetry run pytest
+
+test-coverage:
+	poetry run pytest --cov=page_analyzer --cov-report xml --cov-report=html tests/
