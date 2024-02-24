@@ -25,8 +25,7 @@ def normalize(url_name: str) -> str:
 def check_url(url: str) -> Dict[str, str] | None:
     try:
         r = requests.get(url)
-    except requests.exceptions.RequestException as e:
-        print(e)
+    except requests.exceptions.RequestException:
         return None
     status_code = r.status_code
     if status_code != 200:
