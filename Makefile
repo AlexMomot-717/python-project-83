@@ -21,3 +21,19 @@ test:
 
 test-coverage:
 	poetry run pytest --cov=page_analyzer --cov-report xml --cov-report=html tests/
+
+start-postgres:
+	@docker-compose up -d postgres
+	@sleep 2
+
+stop-postgres:
+	@docker-compose stop postgres
+
+refresh-postgres-data:
+	@docker-compose down --volumes
+	@docker-compose build postgres
+	@docker-compose up -d postgres
+	@sleep 2
+
+up:
+	docker-compose up
