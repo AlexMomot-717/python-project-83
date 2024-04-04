@@ -17,9 +17,16 @@ jobs:
         run: |
           pip install poetry
           make install
+      - name: Start database for tests
+        run: |
+          make start-postgres
       - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v5.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: make test-coverage
+      - name: Stop database
+        if: always()
+        run: |
+          make stop-postgres

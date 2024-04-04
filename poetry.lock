@@ -385,6 +385,20 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+name = "freezegun"
+version = "1.4.0"
+description = "Let your Python tests travel through time"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "freezegun-1.4.0-py3-none-any.whl", hash = "sha256:55e0fc3c84ebf0a96a5aa23ff8b53d70246479e9a68863f1fcac5a3e52f19dd6"},
+    {file = "freezegun-1.4.0.tar.gz", hash = "sha256:10939b0ba0ff5adaecf3b06a5c2f73071d9678e507c5eaedb23c761d56ac774b"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.7"
+
+[[package]]
 name = "gitlint"
 version = "0.19.1"
 description = "Git commit message linter written in python, checks your commit messages for style."
@@ -1197,4 +1211,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "97534c4753bf24ce533378d71559ef61d06ff52a43218d9d8fa6979ffd1ee874"
+content-hash = "d2d3ac4c265b1126f3f1e209da78848e86db94319b3af6179ea0b9012e3ecb9c"
