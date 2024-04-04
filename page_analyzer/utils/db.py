@@ -1,3 +1,4 @@
+import datetime
 import os
 from typing import Any, Dict, List
 
@@ -53,9 +54,11 @@ def create_url(url_name: str) -> int:
     conn = connect_db()
     with conn.cursor() as cur:
         cur.execute(
-            "INSERT INTO urls (name) VALUES (%(str)s) RETURNING id;",
+            "INSERT INTO urls (name, created_at) VALUES (%(str)s, %(date)s) "
+            "RETURNING id;",
             {
                 "str": url_name,
+                "date": datetime.date.today(),
             },
         )
         url_id = cur.fetchone()[0]
@@ -94,14 +97,15 @@ def create_check(url_data: Dict[str, Any]) -> bool:
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO checks"
-            " (url_id, status_code, h1, title, description)"
-            " VALUES (%s, %s, %s, %s, %s);",
+            " (url_id, status_code, h1, title, description, created_at)"
+            " VALUES (%s, %s, %s, %s, %s, %s);",
             (
                 url_data["id"],
                 check_result["response_code"],
                 check_result["h1"],
                 check_result["title"],
                 check_result["description"],
+                datetime.date.today(),
             ),
         )
         conn.commit()
