@@ -9,7 +9,7 @@ from page_analyzer.utils.url import (
 )
 
 
-def test_validate():
+def test_validate() -> None:
     # given
     url = "https://www.weforum.org/my-forum/"
 
@@ -20,7 +20,7 @@ def test_validate():
     assert errors == {}
 
 
-def test_validate_invalid():
+def test_validate_invalid() -> None:
     # given
     url = "htttps://www.weforum.org/my-forum/"
 
@@ -31,7 +31,7 @@ def test_validate_invalid():
     assert errors == {"name": "Некорректный URL"}
 
 
-def test_normalize():
+def test_normalize() -> None:
     # given
     url = "http://www.example.com:1030/software/index.html"
 
@@ -42,7 +42,7 @@ def test_normalize():
     assert normalized_url == "http://www.example.com"
 
 
-def test_check_url():
+def test_check_url() -> None:
     # given
     url = "https://example.com"
 
@@ -70,7 +70,7 @@ def test_check_url():
     }
 
 
-def test_check_url_exception():
+def test_check_url_exception() -> None:
     # given
     url = "http://www.fake.com"
 
@@ -86,7 +86,7 @@ def test_check_url_exception():
     assert check_result is None
 
 
-def test_check_url_unavailable():
+def test_check_url_unavailable() -> None:
     # given
     url = "http://www.unavailable.com"
 
@@ -104,7 +104,7 @@ def test_check_url_unavailable():
     assert check_result is None
 
 
-def test_parse_page_data():
+def test_parse_page_data() -> None:
     html_content = (
         "<title>title</title>"
         "<meta name='description' content='description'></meta>"
@@ -125,7 +125,7 @@ def test_parse_page_data():
     }
 
 
-def test_parse_page_data_no_description():
+def test_parse_page_data_no_description() -> None:
     # given
     html_content = "<title>title</title><h1>header</h1>"
 

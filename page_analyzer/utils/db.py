@@ -17,7 +17,7 @@ def connect_db() -> Any:
 
 def get_url_data(url_id: int) -> Dict[str, int | str] | None:
     conn = connect_db()
-    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as dict_cur:
+    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as dict_cur:
         dict_cur.execute(
             "SELECT * FROM urls WHERE id=%(int)s;",
             {
@@ -69,7 +69,7 @@ def create_url(url_name: str) -> int:
 
 def get_urls() -> List[Dict[str, Any]]:
     conn = connect_db()
-    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as dict_cur:
+    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as dict_cur:
         dict_cur.execute(
             "SELECT DISTINCT ON (u.id)"
             " u.id AS url_id,"
@@ -89,7 +89,7 @@ def get_urls() -> List[Dict[str, Any]]:
     return actual_urls_data
 
 
-def create_check(url_data: Dict[str, Any]) -> bool:
+def create_check(url_data: Dict[str, int | str]) -> bool:
     check_result = check_url(str(url_data["name"]))
     if check_result is None:
         return False
@@ -115,7 +115,7 @@ def create_check(url_data: Dict[str, Any]) -> bool:
 
 def get_url_checks(url_id: int) -> List[Dict[str, str]]:
     conn = connect_db()
-    with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as dict_cur:
+    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as dict_cur:
         dict_cur.execute(
             "SELECT * FROM checks WHERE url_id=%(int)s ORDER BY id DESC;",
             {
