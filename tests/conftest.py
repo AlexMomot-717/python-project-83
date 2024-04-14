@@ -1,11 +1,25 @@
 import os
+from typing import Generator
 
 import pytest
+from flask.testing import FlaskClient
+from page_analyzer.app import app as test_app
 from page_analyzer.utils.db import connect_db
 
 
 @pytest.fixture
-def test_database():
+def client() -> FlaskClient:
+    test_app.config.update(
+        {
+            "TESTING": True,
+        }
+    )
+    test_app.secret_key = "dummy-secret-key"
+    return test_app.test_client()
+
+
+@pytest.fixture
+def test_database() -> Generator[None, None, None]:
     """
     Makes tests to use test database
 

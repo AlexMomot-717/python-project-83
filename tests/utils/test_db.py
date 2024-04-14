@@ -13,7 +13,7 @@ from page_analyzer.utils.db import (
 
 
 @freeze_time("2024-05-01")
-def test_create_url(test_database: None):
+def test_create_url(test_database: None) -> None:
     # given
     url_name = "https://example.com"
 
@@ -22,11 +22,15 @@ def test_create_url(test_database: None):
 
     # then
     created_url = get_url_data(url_id)
-    assert created_url == [url_id, url_name, date.today()]
+    assert created_url == {
+        "id": 1,
+        "name": "https://example.com",
+        "created_at": date.today(),
+    }
 
 
 @freeze_time("2024-05-01")
-def test_get_url_data(test_database: None):
+def test_get_url_data(test_database: None) -> None:
     # given
     url_name = "https://example.com"
 
@@ -36,10 +40,14 @@ def test_get_url_data(test_database: None):
     url_data_result = get_url_data(url_id)
 
     # then
-    assert url_data_result == [url_id, url_name, date.today()]
+    assert url_data_result == {
+        "id": 1,
+        "name": "https://example.com",
+        "created_at": date.today(),
+    }
 
 
-def test_get_url_data_none(test_database: None):
+def test_get_url_data_none(test_database: None) -> None:
     # given
     url_id = -1
 
@@ -50,7 +58,7 @@ def test_get_url_data_none(test_database: None):
     assert url_data_result is None
 
 
-def test_get_url_by_name(test_database: None):
+def test_get_url_by_name(test_database: None) -> None:
     # given
     url_name = "https://example.com"
     url_id = create_url(url_name)
@@ -62,7 +70,7 @@ def test_get_url_by_name(test_database: None):
     assert found_url_id == url_id
 
 
-def test_get_url_by_name_none(test_database: None):
+def test_get_url_by_name_none(test_database: None) -> None:
     # given
     url_name = "https://example.com"
 
@@ -73,7 +81,7 @@ def test_get_url_by_name_none(test_database: None):
     assert url_id is None
 
 
-def test_get_urls(test_database: None):
+def test_get_urls(test_database: None) -> None:
     # given (no checks in DB)
     url_name1 = "https://example1.com"
     url_name2 = "https://example2.com"
@@ -86,12 +94,22 @@ def test_get_urls(test_database: None):
 
     # then (latest urls should go first)
     assert urls_data == [
-        [2, url_name2, "", ""],
-        [1, url_name1, "", ""],
+        {
+            "url_id": 2,
+            "url_name": "https://example2.com",
+            "created_at": "",
+            "status_code": "",
+        },
+        {
+            "url_id": 1,
+            "url_name": "https://example1.com",
+            "created_at": "",
+            "status_code": "",
+        },
     ]
 
 
-def test_get_urls_empty(test_database: None):
+def test_get_urls_empty(test_database: None) -> None:
     # given (no urls in DB)
 
     # when
@@ -102,12 +120,13 @@ def test_get_urls_empty(test_database: None):
 
 
 @freeze_time("2024-05-01")
-def test_create_check(test_database: None):
+def test_create_check(test_database: None) -> None:
     # given
     url_name = "https://example.com"
 
     url_id = create_url(url_name)
     url_data = get_url_data(url_id)
+    assert url_data is not None
 
     # when
     with patch(
@@ -137,12 +156,13 @@ def test_create_check(test_database: None):
     ]
 
 
-def test_create_check_false(test_database: None):
+def test_create_check_false(test_database: None) -> None:
     # given
     url_name = "https://example.com"
 
     url_id = create_url(url_name)
     url_data = get_url_data(url_id)
+    assert url_data is not None
 
     # when
     with patch(
@@ -158,11 +178,12 @@ def test_create_check_false(test_database: None):
 
 
 @freeze_time("2024-05-01")
-def test_get_url_checks(test_database: None):
+def test_get_url_checks(test_database: None) -> None:
     # given
     url_name = "https://example.com"
     url_id = create_url(url_name)
     url_data = get_url_data(url_id)
+    assert url_data is not None
 
     # when
     with patch(
@@ -193,7 +214,7 @@ def test_get_url_checks(test_database: None):
     ]
 
 
-def test_get_url_checks_empty(test_database: None):
+def test_get_url_checks_empty(test_database: None) -> None:
     # given
     url_id = 1
 

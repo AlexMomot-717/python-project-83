@@ -24,11 +24,13 @@ repos:
       - id: mixed-line-ending
       - id: check-added-large-files
       - id: end-of-file-fixer
+        exclude: tests/fixtures
       - id: trailing-whitespace
         # Exclude Markdown files because `  ` at the end of a line is a valid
         # syntax to notify a line break.
         # See https://github.com/pre-commit/pre-commit-hooks/issues/57
         exclude_types: [markdown]
+        exclude: tests/fixtures
   - repo: https://github.com/psf/black
     rev: 23.12.1
     hooks:
@@ -45,7 +47,7 @@ repos:
         name: run mypy
         language: system
         # entry should be the same you'd use to run mypy locally
-        entry: mypy page_analyzer --config-file pyproject.toml
+        entry: mypy page_analyzer tests --config-file pyproject.toml
         pass_filenames: false # not needed, as mypy should be executed on the whole codebase
         always_run: true
         types: [python, pyi]
@@ -63,3 +65,4 @@ repos:
     rev: "v4.0.0-alpha.8"
     hooks:
       - id: prettier
+        exclude: tests/fixtures
