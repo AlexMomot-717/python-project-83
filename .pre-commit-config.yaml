@@ -63,4 +63,3 @@ repos:
     rev: "v4.0.0-alpha.8"
     hooks:
       - id: prettier
-        exclude: .github/workflows/hexlet-check.yml
