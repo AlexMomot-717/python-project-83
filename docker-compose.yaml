@@ -1,6 +1,14 @@
 version: "3.9"
 
 services:
+  app:
+    container_name: "flaskapp"
+    build:
+      context: .
+      dockerfile: ./docker-images/backend/Dockerfile
+    env_file: docker-images/backend/.env.default
+    ports:
+      - "8000:8000"
   postgres:
     container_name: "postgres"
     build:
