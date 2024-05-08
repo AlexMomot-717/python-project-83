@@ -13,3 +13,5 @@ CREATE TABLE checks (
     description text,
     created_at DATE DEFAULT NOW() NOT NULL
 );
+
+CREATE DATABASE testdb WITH TEMPLATE 'page-analyzer';

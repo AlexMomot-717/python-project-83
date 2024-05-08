@@ -29,7 +29,7 @@ def test_database() -> Generator[None, None, None]:
     """
     os.environ[
         "DATABASE_URL"
-    ] = "postgresql://page-analyzer:page-analyzer@localhost:5432/page-analyzer"
+    ] = "postgresql://page-analyzer:page-analyzer@localhost:5432/testdb"
     yield
     conn = connect_db()
     with conn.cursor() as cur:
